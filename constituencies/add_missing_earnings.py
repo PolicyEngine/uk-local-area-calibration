@@ -37,4 +37,4 @@ df = pd.DataFrame({
 
 earnings = pd.concat([earnings, df])
 
-earnings.to_csv("targets/employment_inc")
+earnings.to_csv("targets/employment_income.csv", index=False)
