@@ -48,6 +48,7 @@ missing_constituencies = pd.DataFrame(
     }
 )
 for col in ages.columns[2:]:
+    # We only have England and Wales demographics- fill in the remaining with the average age profiles among the rest of the UK.
     missing_constituencies[col] = ages[col].mean()
 
 ages = pd.concat([ages, missing_constituencies])
@@ -136,5 +137,5 @@ for epoch in desc:
 
 final_weights = torch.exp(weights).detach().numpy()
 
-with h5py.File("weights.h5", "w+") as f:
+with h5py.File("weights.h5", "w") as f:
     f.create_dataset("weights", data=final_weights)
