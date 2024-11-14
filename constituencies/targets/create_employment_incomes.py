@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.integrate import quad
-import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings("ignore")
 
-income = pd.read_excel("earnings-distribution-targets/nomis_earning_jobs_data.xlsx")  # Ensure only one ".xlsx" extension
+income = pd.read_excel("nomis_earning_jobs_data.xlsx")  # Ensure only one ".xlsx" extension
+# Export the above from Nomis- containing percentiles of earnings for each constituency (all jobs).
 income = income.drop(index=range(0, 7)).reset_index(drop=True)
 income.columns = income.iloc[0]
 income = income.drop(index=0).reset_index(drop=True)
@@ -244,7 +246,7 @@ result_df['total_earning'] = result_df['population_count'] * (
 
 result_df = result_df.dropna(subset=['constituency_code'])
 
-total_income = pd.read_csv("earnings-distribution-targets/total_income.csv")
+total_income = pd.read_csv("total_income.csv")
 
 missing_codes = total_income[~total_income['code'].isin(result_df['constituency_code'])]['code'].unique()
 
@@ -293,7 +295,7 @@ result_df_copy = result_df_copy.dropna(subset=['constituency_code'])
 
 import numpy as np
 
-def find_and_replace_zero_populations(result_df_copy, total_income):
+def find_and_replace_zero_populations(result_df_copy, total_income) -> pd.DataFrame:
     # Step 1: Find constituencies with all zero populations
     constituencies_with_zero_population = result_df_copy.groupby('constituency_code').filter(
         lambda group: (group['population_count'] == 0).all()
@@ -368,4 +370,13 @@ def find_and_replace_zero_populations(result_df_copy, total_income):
     return result_df
 
 updated_df = find_and_replace_zero_populations(result_df_copy, total_income)
-updated_df.to_csv('earnings-distribution-targets/Earnings_distribution_targets.csv', index=False)
+
+updated_df = updated_df.rename(columns={
+    "constituency_code": "code",
+    "parliamentary constituency 2010": "name",
+    "income_lower_bound": "employment_income_lower_bound",
+    "income_upper_bound": "employment_income_upper_bound",
+    "population_count": "employment_income_count",
+    "total_earning": "employment_income_amount",
+})[["code", "name", "employment_income_lower_bound", "employment_income_upper_bound", "employment_income_count", "employment_income_amount"]]
+updated_df.to_csv('employment_income.csv', index=False)
