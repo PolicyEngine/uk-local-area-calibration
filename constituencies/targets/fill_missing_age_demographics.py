@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+
 ages = pd.read_csv("age.csv")
 incomes = pd.read_csv("total_income.csv")
 

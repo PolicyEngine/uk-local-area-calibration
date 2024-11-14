@@ -11,7 +11,10 @@ from policyengine_uk_data.utils.loss import (
     create_target_matrix as create_national_target_matrix,
 )
 
-def create_constituency_target_matrix(dataset: str = "enhanced_frs_2022_23", time_period: int = 2025, reform=None):
+
+def create_constituency_target_matrix(
+    dataset: str = "enhanced_frs_2022_23", time_period: int = 2025, reform=None
+):
     ages = pd.read_csv("targets/age.csv")
     incomes = pd.read_csv("targets/total_income.csv")
     employment_incomes = pd.read_csv("targets/employment_income.csv")
@@ -58,18 +61,22 @@ def create_constituency_target_matrix(dataset: str = "enhanced_frs_2022_23", tim
         if row["employment_income_lower_bound"] >= 40_000:
             continue
 
-        in_bound = (employment_income >= row["employment_income_lower_bound"]) & (
-            employment_income < row["employment_income_upper_bound"]
-        )
+        in_bound = (
+            employment_income >= row["employment_income_lower_bound"]
+        ) & (employment_income < row["employment_income_upper_bound"])
         band_str = f"{row['employment_income_lower_bound']}_{row['employment_income_upper_bound']}"
         matrix[f"hmrc/employment_income/count/{band_str}"] = sim.map_result(
             in_bound, "person", "household"
         )
-        y[f"hmrc/employment_income/count/{band_str}"] = row["employment_income_count"]
+        y[f"hmrc/employment_income/count/{band_str}"] = row[
+            "employment_income_count"
+        ]
 
         matrix[f"hmrc/employment_income/amount/{band_str}"] = sim.map_result(
             employment_income * in_bound, "person", "household"
         )
-        y[f"hmrc/employment_income/amount/{band_str}"] = row["employment_income_amount"]
+        y[f"hmrc/employment_income/amount/{band_str}"] = row[
+            "employment_income_amount"
+        ]
 
     return matrix, y
