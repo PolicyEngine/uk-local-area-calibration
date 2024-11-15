@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import h5py
-from .transform_constituencies import transform_2010_to_2024
+from transform_constituencies import transform_2010_to_2024
 # Fill in missing constituencies with average column values
 import pandas as pd
 import numpy as np
@@ -66,7 +66,7 @@ def calibrate():
             weights_2024 = transform_2010_to_2024(final_weights)
 
             with h5py.File("weights.h5", "w") as f:
-                f.create_dataset("weight", data=final_weights)
+                f.create_dataset("weight", data=weights_2024)
 
 
 if __name__ == "__main__":
