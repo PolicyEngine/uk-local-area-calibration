@@ -22,5 +22,5 @@ def transform_2010_to_2024(weights_2010: np.ndarray, file_path: Union[str, Path]
     with h5py.File(file_path, 'r') as hf:
         mapping_matrix = hf['df'][:]
     
-    transformed = weights_2010.T @ mapping_matrix
+    transformed = mapping_matrix @ weights_2010
     return transformed.T

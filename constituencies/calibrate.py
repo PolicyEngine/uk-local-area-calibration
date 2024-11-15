@@ -52,7 +52,7 @@ def calibrate():
 
     optimizer = torch.optim.Adam([weights], lr=0.1)
 
-    desc = tqdm(range(100))
+    desc = tqdm(range(512))
 
     for epoch in desc:
         optimizer.zero_grad()
@@ -63,10 +63,9 @@ def calibrate():
 
         if epoch % 100 == 0:
             final_weights = torch.exp(weights).detach().numpy()
-            weights_2024 = transform_2010_to_2024(final_weights)
 
             with h5py.File("weights.h5", "w") as f:
-                f.create_dataset("weight", data=weights_2024)
+                f.create_dataset("weight", data=final_weights)
 
 
 if __name__ == "__main__":
