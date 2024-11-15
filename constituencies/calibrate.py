@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import h5py
-
+from .transform_constituencies import transform_2010_to_2024
 # Fill in missing constituencies with average column values
 import pandas as pd
 import numpy as np
@@ -52,7 +52,7 @@ def calibrate():
 
     optimizer = torch.optim.Adam([weights], lr=0.1)
 
-    desc = tqdm(range(1_000))
+    desc = tqdm(range(100))
 
     for epoch in desc:
         optimizer.zero_grad()
@@ -63,6 +63,7 @@ def calibrate():
 
         if epoch % 100 == 0:
             final_weights = torch.exp(weights).detach().numpy()
+            weights_2024 = transform_2010_to_2024(final_weights)
 
             with h5py.File("weights.h5", "w") as f:
                 f.create_dataset("weight", data=final_weights)
