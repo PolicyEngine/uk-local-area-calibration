@@ -1,18 +1,26 @@
 import numpy as np
 import h5py
-import os
+from pathlib import Path
+from typing import Union
 
-def transform_2010_to_2024(weights_2010, file_path):
+def transform_2010_to_2024(weights_2010: np.ndarray, file_path: Union[str, Path]) -> np.ndarray:
     """
     Transforms weights from 2010 constituencies to 2024 constituencies using the mapping matrix.
 
     Args:
-        weights_2010 (numpy.ndarray): A 1D array of weights corresponding to 2010 constituencies.
-        file_path (str): Path to the h5 file containing the mapping matrix.
+        weights_2010 (np.ndarray): A 1D array of weights corresponding to 2010 constituencies.
+        file_path (Union[str, Path]): Path to the h5 file containing the mapping matrix.
+                                     Can be provided as string or Path object.
 
     Returns:
-        numpy.ndarray: A 1D array of weights corresponding to 2024 constituencies.
+        np.ndarray: A 1D array of weights corresponding to 2024 constituencies.
+
+    Raises:
+        ValueError: If the input weights array length doesn't match the mapping matrix dimensions.
     """
+    # Convert file_path to Path object if it isn't already
+    file_path = Path(file_path)
+
     with h5py.File(file_path, 'r') as hf:
         mapping_matrix = hf['df'][:]  # Load the saved matrix
 
@@ -22,5 +30,5 @@ def transform_2010_to_2024(weights_2010, file_path):
             f"but mapping matrix expects {mapping_matrix.shape[0]} rows."
         )
 
-    weights_2024 = np.dot(weights_2010, mapping_matrix)
+    weights_2024: np.ndarray = np.dot(weights_2010, mapping_matrix)
     return weights_2024
