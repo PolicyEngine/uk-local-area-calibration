@@ -37,7 +37,6 @@ def create_constituency_target_matrix(
     y["hmrc/total_income/count"] = incomes["total_income_count"]
 
     age = sim.calculate("age").values
-
     for lower_age in range(0, 80, 10):
         upper_age = lower_age + 10
 
@@ -56,27 +55,29 @@ def create_constituency_target_matrix(
         y[f"age/{age_str}"] = age_count.values
 
     employment_income = sim.calculate("employment_income").values
+    bounds = list(employment_incomes.employment_income_lower_bound.unique()) + [np.inf]
 
-    for _, row in employment_incomes.iterrows():
-        if row["employment_income_lower_bound"] >= 40_000:
+    for lower_bound, upper_bound in zip(bounds[:-1], bounds[1:]):
+        if lower_bound >= 70_000 or lower_bound < 12_570:
             continue
-
         in_bound = (
-            employment_income >= row["employment_income_lower_bound"]
-        ) & (employment_income < row["employment_income_upper_bound"])
-        band_str = f"{row['employment_income_lower_bound']}_{row['employment_income_upper_bound']}"
+            employment_income >= lower_bound
+        ) & (employment_income < upper_bound) & (employment_income != 0) & (age >= 16)
+        band_str = f"{lower_bound}_{upper_bound}"
         matrix[f"hmrc/employment_income/count/{band_str}"] = sim.map_result(
             in_bound, "person", "household"
         )
-        y[f"hmrc/employment_income/count/{band_str}"] = row[
-            "employment_income_count"
-        ]
+        y[f"hmrc/employment_income/count/{band_str}"] = employment_incomes[
+            (employment_incomes.employment_income_lower_bound == lower_bound)
+            & (employment_incomes.employment_income_upper_bound == upper_bound)
+        ].employment_income_count.values
 
         matrix[f"hmrc/employment_income/amount/{band_str}"] = sim.map_result(
             employment_income * in_bound, "person", "household"
         )
-        y[f"hmrc/employment_income/amount/{band_str}"] = row[
-            "employment_income_amount"
-        ]
+        y[f"hmrc/employment_income/amount/{band_str}"] = employment_incomes[
+            (employment_incomes.employment_income_lower_bound == lower_bound)
+            & (employment_incomes.employment_income_upper_bound == upper_bound)
+        ].employment_income_amount.values
 
     return matrix, y

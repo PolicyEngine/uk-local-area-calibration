@@ -37,7 +37,6 @@ def calibrate():
         requires_grad=True,
     )
     metrics = torch.tensor(matrix.values, dtype=torch.float32)
-    weighted_metrics = weights.unsqueeze(-1) * metrics.unsqueeze(0)
     y = torch.tensor(y.values, dtype=torch.float32)
     matrix_national = torch.tensor(m_national.values, dtype=torch.float32)
     y_national = torch.tensor(y_national.values, dtype=torch.float32)
@@ -51,9 +50,9 @@ def calibrate():
 
         return mse_c + mse_n
 
-    optimizer = torch.optim.Adam([weights], lr=1)
+    optimizer = torch.optim.Adam([weights], lr=0.1)
 
-    desc = tqdm(range(100))
+    desc = tqdm(range(1_000))
 
     for epoch in desc:
         optimizer.zero_grad()
@@ -62,10 +61,11 @@ def calibrate():
         l.backward()
         optimizer.step()
 
-    final_weights = torch.exp(weights).detach().numpy()
+        if epoch % 100 == 0:
+            final_weights = torch.exp(weights).detach().numpy()
 
-    with h5py.File("weights.h5", "w") as f:
-        f.create_dataset("weight", data=final_weights)
+            with h5py.File("weights.h5", "w") as f:
+                f.create_dataset("weight", data=final_weights)
 
 
 if __name__ == "__main__":
