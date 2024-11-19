@@ -4,45 +4,41 @@ from transform_constituencies import transform_2010_to_2024
 import h5py
 import pandas as pd
 
+# Example usage
 print("Current working directory:", os.getcwd())
 
-# Use the full path to the file
-file_path = os.path.join(os.getcwd(), 'constituencies_mapping', 'constituencies_mapping_2010_2024.h5')
+file_path = os.path.join(os.getcwd(), 'constituencies_mapping', 'constituency_mapping.h5')
 print("Looking for file at:", file_path)
 
-# Load the mapping matrix and its metadata to check dimensions
+# Load the mapping matrix and its metadata
 with h5py.File(file_path, 'r') as hf:
-    mapping_matrix = hf['df'][:]
-
+    mapping_matrix = hf['df'][:]  # Using 'df' as the dataset name
+    
     code_2010_count = mapping_matrix.shape[0]
     code_2024_count = mapping_matrix.shape[1]
     
-    # Extract the metadata for row and column indices
-    code_2010_indices = hf.attrs['rows'] if 'rows' in hf.attrs else None
-    code_2024_indices = hf.attrs['columns'] if 'columns' in hf.attrs else None
+    # Try to get constituency codes if they were saved
+    try:
+        code_2010_indices = [i.decode('utf-8') for i in hf['row_indices'][:]]
+        code_2024_indices = [i.decode('utf-8') for i in hf['col_indices'][:]]
+    except KeyError:
+        # If not saved, just use numbers
+        code_2010_indices = list(range(code_2010_count))
+        code_2024_indices = list(range(code_2024_count))
 
-# Print the dimensions
-print(f"Number of 2010 constituencies: {code_2010_count}")
+# Print information
+print(f"\nNumber of 2010 constituencies: {code_2010_count}")
 print(f"Number of 2024 constituencies: {code_2024_count}")
 
-print("\n2010 Constituency Codes:")
-print(code_2010_indices)
-
-print("\n2024 Constituency Codes:")
-print(code_2024_indices)
-
-# Example of using the transform function
-# Create some dummy weights for demonstration
-dummy_weights_2010 = np.ones(code_2010_count)  # Create array of ones with correct size
+# Create and transform dummy weights
+dummy_weights_2010 = np.ones(code_2010_count)
 transformed_weights = transform_2010_to_2024(dummy_weights_2010, file_path)
 
-print("\nExample transformation results:")
-print(f"Input weights shape: {dummy_weights_2010.shape}")
-print(f"Output weights shape: {transformed_weights.shape}")
-
+# Create results DataFrame
 results_df = pd.DataFrame({
     '2024_Constituency_Code': code_2024_indices,
     'Transformed_Weight': transformed_weights
 })
+
 print("\nTransformed Weights for each 2024 Constituency:")
 print(results_df)
