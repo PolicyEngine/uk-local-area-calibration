@@ -62,10 +62,26 @@ def calibrate():
         optimizer.step()
 
         if epoch % 100 == 0:
+    for epoch in desc:
+        optimizer.zero_grad()
+        l = loss(torch.exp(weights))
+        desc.set_description(f"Loss: {l.item()}")
+        l.backward()
+        optimizer.step()
+
+        if epoch % 100 == 0:
             final_weights = torch.exp(weights).detach().numpy()
+            mapping_matrix = pd.read_csv("mapping_2010_to_2024/mapping_matrix.csv")
+            final_weights = update_weights(final_weights, mapping_matrix)
 
             with h5py.File("weights.h5", "w") as f:
                 f.create_dataset("weight", data=final_weights)
+
+
+def update_weights(weights, mapping_matrix):
+   mapping_matrix = mapping_matrix.set_index(mapping_matrix.columns[0])
+   mapping_matrix = mapping_matrix.div(mapping_matrix.sum(), axis=1)
+   return mapping_matrix.T.dot(weights)
 
 
 if __name__ == "__main__":
