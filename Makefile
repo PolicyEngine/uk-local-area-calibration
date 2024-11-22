@@ -8,5 +8,6 @@ docker-build:
 	docker build -t constituency-weights . -f docker/constituencies.Dockerfile --secret id=POLICYENGINE_GITHUB_MICRODATA_AUTH_TOKEN
 
 documentation:
+	jb clean docs
 	jb build docs
 	python docs/add_plotly_to_book.py docs
