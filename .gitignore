@@ -1,1 +1,4 @@
 **/*.geojson
+**/*.h5
+**/*.xlsx
+**/__pycache__
