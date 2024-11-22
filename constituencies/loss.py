@@ -6,18 +6,21 @@ import numpy as np
 # Fill in missing constituencies with average column values
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 from policyengine_uk_data.utils.loss import (
     create_target_matrix as create_national_target_matrix,
 )
 
+FOLDER = Path(__file__).parent
+
 
 def create_constituency_target_matrix(
     dataset: str = "enhanced_frs_2022_23", time_period: int = 2025, reform=None
 ):
-    ages = pd.read_csv("targets/age.csv")
-    incomes = pd.read_csv("targets/total_income.csv")
-    employment_incomes = pd.read_csv("targets/employment_income.csv")
+    ages = pd.read_csv(FOLDER / "targets" / "age.csv")
+    incomes = pd.read_csv(FOLDER / "targets" / "total_income.csv")
+    employment_incomes = pd.read_csv(FOLDER / "targets" / "employment_income.csv")
 
     sim = Microsimulation(dataset=dataset, reform=reform)
     sim.default_calculation_period = time_period
