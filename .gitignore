@@ -2,3 +2,5 @@
 **/*.h5
 **/*.xlsx
 **/__pycache__
+**/_build
+**/*.egg-info
