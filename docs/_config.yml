@@ -4,7 +4,7 @@ copyright: "2024"
 logo: logo.png
 
 execute:
-  execute_notebooks: off
+  execute_notebooks: force
 
 repository:
   url: https://github.com/policyengine/uk-local-area-calibration
@@ -19,4 +19,5 @@ sphinx:
     pygments_style: default
     html_css_files:
       - style.css
-    nb_remove_code_source: true
+    nb_remove_code_source: false
+
