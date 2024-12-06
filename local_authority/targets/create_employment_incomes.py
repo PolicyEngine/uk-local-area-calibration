@@ -572,4 +572,5 @@ updated_df = updated_df.rename(
         "employment_income_amount",
     ]
 ]
+updated_df = updated_df.sort_values('code')
 updated_df.to_csv("employment_income.csv", index=False)

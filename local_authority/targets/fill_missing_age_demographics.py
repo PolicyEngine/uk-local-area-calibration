@@ -46,6 +46,9 @@ df_age['all'] = df_age[age_columns].sum(axis=1)
 final_columns = ['code', 'name', 'all'] + age_columns
 df_age = df_age[final_columns]
 
+df_age = df_age.sort_values('code')
+df_income = df_income.sort_values('code')
+
 # Save files
 df_age.to_csv('age.csv', index=False)
 df_income.to_csv('total_income.csv', index=False)
