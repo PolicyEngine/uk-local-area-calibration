@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 income = pd.read_excel(
     "nomis_earning_jobs_data.xlsx"
 )  # Ensure only one ".xlsx" extension
-# Export the above from Nomis- containing percentiles of earnings for each constituency (all jobs).
+# Export the above from Nomis- containing percentiles of earnings for each local authority (all jobs).
 income = income.drop(index=range(0, 7)).reset_index(drop=True)
 income.columns = income.iloc[0]
 income = income.drop(index=0).reset_index(drop=True)
@@ -294,7 +294,7 @@ def calculate_band_population(row):
         fill_value="extrapolate",
     )
 
-    # Total jobs for this constituency (equivalent to total population)
+    # Total jobs for this local authority (equivalent to total population)
     total_jobs = row["Number of jobs"]
 
     # Calculate the population count for each income band
@@ -438,8 +438,8 @@ import numpy as np
 def find_and_replace_zero_populations(
     result_df_copy, total_income
 ) -> pd.DataFrame:
-    # Step 1: Find constituencies with all zero populations
-    constituencies_with_zero_population = (
+    # Step 1: Find local authorities with all zero populations
+    LA_with_zero_population = (
         result_df_copy.groupby("LA_code")
         .filter(lambda group: (group["population_count"] == 0).all())[
             "LA_code"
@@ -450,62 +450,62 @@ def find_and_replace_zero_populations(
     # Create a copy to avoid modifying the original DataFrame
     result_df = result_df_copy.copy()
 
-    # Step 2: Process each zero-population constituency
-    for zero_constituency in constituencies_with_zero_population:
+    # Step 2: Process each zero-population local authority
+    for zero_LA in LA_with_zero_population:
         try:
-            # Get the total_income_count for the current constituency
-            current_constituency_data = total_income[
-                total_income["code"] == zero_constituency
+            # Get the total_income_count for the current local authority
+            current_LA_data = total_income[
+                total_income["code"] == zero_LA
             ]
 
-            if current_constituency_data.empty:
+            if current_LA_data.empty:
                 print(
-                    f"Warning: No data found for constituency {zero_constituency} in total_income"
+                    f"Warning: No data found for local authority {zero_LA} in total_income"
                 )
                 continue
 
-            current_total_income = current_constituency_data[
+            current_total_income = current_LA_data[
                 "total_income_count"
             ].values[0]
 
-            # Find the nearest constituency by total_income_count
-            # Exclude both the current constituency and other zero population constituencies
-            other_constituencies = total_income[
-                ~total_income["code"].isin(constituencies_with_zero_population)
+            # Find the nearest local authority by total_income_count
+            # Exclude both the current local authority and other zero population local authorities
+            other_LA = total_income[
+                ~total_income["code"].isin(LA_with_zero_population)
             ]
 
-            if other_constituencies.empty:
-                print(f"Warning: No valid constituencies found to copy from")
+            if other_LA.empty:
+                print(f"Warning: No valid local authorities found to copy from")
                 continue
 
             # Calculate absolute differences
             differences = np.abs(
-                other_constituencies["total_income_count"]
+                other_LA["total_income_count"]
                 - current_total_income
             )
 
             # Get the index of the minimum difference
             min_diff_idx = differences.values.argmin()
-            nearest_constituency = other_constituencies.iloc[min_diff_idx][
+            nearest_LA = other_LA.iloc[min_diff_idx][
                 "code"
             ]
 
-            # Step 3: Copy population and earnings data from nearest constituency
-            # For each income band of the zero constituency
+            # Step 3: Copy population and earnings data from nearest local authority
+            # For each income band of the zero local authority
             zero_const_rows = result_df[
-                result_df["LA_code"] == zero_constituency
+                result_df["LA_code"] == zero_LA
             ]
 
             if zero_const_rows.empty:
                 print(
-                    f"Warning: No rows found for constituency {zero_constituency} in result_df"
+                    f"Warning: No rows found for local authority {zero_LA} in result_df"
                 )
                 continue
 
             for _, zero_row in zero_const_rows.iterrows():
-                # Find the matching income band in the nearest constituency
+                # Find the matching income band in the nearest local authority
                 matching_row = result_df[
-                    (result_df["LA_code"] == nearest_constituency)
+                    (result_df["LA_code"] == nearest_LA)
                     & (
                         result_df["income_lower_bound"]
                         == zero_row["income_lower_bound"]
@@ -518,13 +518,13 @@ def find_and_replace_zero_populations(
 
                 if matching_row.empty:
                     print(
-                        f"Warning: No matching income band found for constituency {nearest_constituency}"
+                        f"Warning: No matching income band found for local authority {nearest_LA}"
                     )
                     continue
 
                 # Update the specific row and income band with the corresponding values
                 mask = (
-                    (result_df["LA_code"] == zero_constituency)
+                    (result_df["LA_code"] == zero_LA)
                     & (
                         result_df["income_lower_bound"]
                         == zero_row["income_lower_bound"]
@@ -544,7 +544,7 @@ def find_and_replace_zero_populations(
 
         except Exception as e:
             print(
-                f"Error processing constituency {zero_constituency}: {str(e)}"
+                f"Error processing local authority {zero_LA}: {str(e)}"
             )
             continue
 
