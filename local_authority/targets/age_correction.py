@@ -99,5 +99,5 @@ def scale_age_data(excel_file_path, age_csv_path):
 
     return scaled_df
 
-scaled_age_data = scale_age_data("Scotland_population.xlsx", "age.csv")
-scaled_age_data.to_csv("corrected_age.csv", index=False)
+scaled_age_data = scale_age_data("Scotland_population.xlsx", "age_old.csv")
+scaled_age_data.to_csv("age.csv", index=False)
