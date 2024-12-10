@@ -1,0 +1,60 @@
+code,name,population
+S14000001,Aberdeen North,111960
+S14000002,Aberdeen South,112080
+S14000003,Airdrie and Shotts,97590
+S14000004,Angus,97400
+S14000005,Argyll and Bute,91160
+S14000006,"Ayr, Carrick and Cumnock",90330
+S14000007,Banff and Buchan,95068
+S14000008,"Berwickshire, Roxburgh and Selkirk",96600
+S14000009,"Caithness, Sutherland and Easter Ross",95980
+S14000010,Central Ayrshire,87680
+S14000011,"Coatbridge, Chryston and Bellshill",94970
+S14000012,"Cumbernauld, Kilsyth and Kirkintilloch East",91850
+S14000013,Dumfries and Galloway,95720
+S14000014,"Dumfriesshire, Clydesdale and Tweeddale",87650
+S14000015,Dundee East,95068
+S14000016,Dundee West,95068
+S14000017,Dunfermline and West Fife,95560
+S14000018,East Dunbartonshire,95068
+S14000019,"East Kilbride, Strathaven and Lesmahagow",95890
+S14000020,East Lothian,95068
+S14000021,East Renfrewshire,96810
+S14000022,Edinburgh East,113740
+S14000023,Edinburgh North and Leith,110070
+S14000024,Edinburgh South,99870
+S14000025,Edinburgh South West,107020
+S14000026,Edinburgh West,98520
+S14000027,Na h-Eileanan an Iar,26130
+S14000028,Falkirk,96730
+S14000029,Glasgow Central,95068
+S14000030,Glasgow East,99690
+S14000031,Glasgow North,109110
+S14000032,Glasgow North East,107140
+S14000033,Glasgow North West,95068
+S14000034,Glasgow South,91460
+S14000035,Glasgow South West,96240
+S14000036,Glenrothes,92650
+S14000037,Gordon,92510
+S14000038,Inverclyde,90030
+S14000039,"Inverness, Nairn, Badenoch and Strathspey",105010
+S14000040,Kilmarnock and Loudoun,95740
+S14000041,Kirkcaldy and Cowdenbeath,95068
+S14000042,Lanark and Hamilton East,95068
+S14000043,Linlithgow and East Falkirk,95068
+S14000044,Livingston,102160
+S14000045,Midlothian,96520
+S14000046,Moray,98660
+S14000047,Motherwell and Wishaw,97490
+S14000048,North Ayrshire and Arran,91540
+S14000049,North East Fife,92290
+S14000050,Ochil and South Perthshire,95068
+S14000051,Orkney and Shetland,44950
+S14000052,Paisley and Renfrewshire North,93180
+S14000053,Paisley and Renfrewshire South,94100
+S14000054,Perth and North Perthshire,101720
+S14000055,"Ross, Skye and Lochaber",95068
+S14000056,Rutherglen and Hamilton West,93730
+S14000057,Stirling,101990
+S14000058,West Aberdeenshire and Kincardine,97490
+S14000059,West Dunbartonshire,91490
