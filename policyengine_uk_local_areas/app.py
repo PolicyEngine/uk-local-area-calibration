@@ -8,17 +8,32 @@ import pandas as pd
 import h5py
 import numpy as np
 
+from reform_parameters import parse_reform_parameters
+
 weights_file = "weights.h5"
 
 weights = h5py.File(weights_file, "r")
 weights = np.array(weights["weights"])
 
-reform_id = st.number_input("Reform ID", value=1, min_value=1, max_value=None)
+reform_parameters_json = st.text_area(
+    "Reform parameters (JSON)",
+    value="{}",
+    help=(
+        "Each parameter path mapped to its values by period, for example "
+        '{"gov.hmrc.income_tax.rates.uk[0].rate": {"2025": 0.21}}. '
+        "An empty object is current law."
+    ),
+)
+try:
+    reform_parameters = parse_reform_parameters(reform_parameters_json)
+except ValueError as error:
+    st.error(str(error))
+    st.stop()
 
 
 @st.cache_data
-def calculate_impacts(reform_id):
-    reform = Reform.from_api(reform_id, "uk")
+def calculate_impacts(reform_parameters):
+    reform = Reform.from_dict(reform_parameters, country_id="uk")
 
     baseline = Microsimulation()
     reformed = Microsimulation(reform=reform)
@@ -34,7 +49,7 @@ def calculate_impacts(reform_id):
     return baseline_hnet, reformed_hnet, gain, revenue_impact
 
 
-impacts = calculate_impacts(reform_id)
+impacts = calculate_impacts(reform_parameters)
 
 baseline, reformed, gain, revenue_impact = impacts
 

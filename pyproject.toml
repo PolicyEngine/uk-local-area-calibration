@@ -45,6 +45,11 @@ addopts = "-v"
 testpaths = [
     "tests",
 ]
+# The scripts in policyengine_uk_local_areas import each other as top-level
+# modules, because they run from that directory.
+pythonpath = [
+    "policyengine_uk_local_areas",
+]
 
 [tool.black]
 line-length = 79
