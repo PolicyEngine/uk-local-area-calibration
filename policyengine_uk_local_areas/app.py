@@ -49,7 +49,13 @@ def calculate_impacts(reform_parameters):
     return baseline_hnet, reformed_hnet, gain, revenue_impact
 
 
-impacts = calculate_impacts(reform_parameters)
+try:
+    impacts = calculate_impacts(reform_parameters)
+except ValueError as error:
+    # Reform.from_dict raises ValueError for an unknown parameter path or a
+    # malformed period key when the simulation applies the reform.
+    st.error(f"The reform could not be applied: {error}")
+    st.stop()
 
 baseline, reformed, gain, revenue_impact = impacts
 
